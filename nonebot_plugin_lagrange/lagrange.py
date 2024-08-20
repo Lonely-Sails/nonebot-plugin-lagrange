@@ -40,15 +40,35 @@ class Lagrange:
                 if file_path.name != 'appsettings.json':
                     file_path.unlink()
 
+    def update_config(self):
+        if not self.path.exists():
+            self.path.mkdir()
+        config_path = (self.path / 'appsettings.json')
+        if globals.appsettings_path is None:
+            generate_default_settings()
+            globals.update_file_paths()
+        with globals.appsettings_path.open('r', encoding='Utf-8') as file:
+            lagrange_config = load(file)
+        lagrange_config['Implementations'][0]['Port'] = self.config.port
+        lagrange_config['Implementations'][0]['Host'] = str(self.config.host)
+        lagrange_config['Implementations'][0]['AccessToken'] = self.config.onebot_access_token
+        with config_path.open('w', encoding='Utf-8') as file:
+            dump(lagrange_config, file)
+            self.log('SUCCESS', 'Lagrange.Onebot 配置文件更新成功！')
+            return True
+
+    def log(self, level: str, content: str):
+        content = F'[{self.name}] {content}'
+        logger.log(level, content)
+
     async def stop(self):
         if self.task is not None:
             self.task.terminate()
+            checker_task = asyncio.create_task(self.checker())
             await self.task.wait()
+            checker_task.cancel()
             self.log_task.cancel()
             self.error_task.cancel()
-            if self.cache[-1] != 'Lagrange.OneBot Implementation has stopped':
-                self.log('ERROR', 'Lagrange.Onebot 退出失败！')
-                self.task.kill()
             self.task = None
             self.log('INFO', 'Lagrange.Onebot 已退出！如若没有正常使用，请检查日志。')
 
@@ -61,6 +81,12 @@ class Lagrange:
         self.log_task = asyncio.create_task(self.listen_log())
         self.error_task = asyncio.create_task(self.listen_error())
         self.log('SUCCESS', 'Lagrange.Onebot 启动成功！请扫描目录下的图片或控制台中的二维码登录。')
+
+    async def checker(self):
+        await asyncio.sleep(10)
+        if self.task is not None:
+            logger.warning(F'Lagrange.Onebot 进程 {self.task} 未响应！正在强制关闭。')
+            self.task.kill()
 
     async def listen_log(self):
         async for line in self.task.stdout:
@@ -89,24 +115,3 @@ class Lagrange:
         self.cache.append(log)
         for connection in self.connections:
             await connection.send(log)
-
-    def update_config(self):
-        if not self.path.exists():
-            self.path.mkdir()
-        config_path = (self.path / 'appsettings.json')
-        if globals.appsettings_path is None:
-            generate_default_settings()
-            globals.update_file_paths()
-        with globals.appsettings_path.open('r', encoding='Utf-8') as file:
-            lagrange_config = load(file)
-        lagrange_config['Implementations'][0]['Port'] = self.config.port
-        lagrange_config['Implementations'][0]['Host'] = str(self.config.host)
-        lagrange_config['Implementations'][0]['AccessToken'] = self.config.onebot_access_token
-        with config_path.open('w', encoding='Utf-8') as file:
-            dump(lagrange_config, file)
-            self.log('SUCCESS', 'Lagrange.Onebot 配置文件更新成功！')
-            return True
-
-    def log(self, level: str, content: str):
-        content = F'[{self.name}] {content}'
-        logger.log(level, content)

@@ -8,9 +8,10 @@ from nonebot_plugin_localstore import get_data_dir
 lagrange_path: Path = None
 appsettings_path: Path = None
 data_path: Path = get_data_dir('Lagrange')
-webui_path: Path = (data_path / 'webui')
+webui_path: Path = (Path(__file__).parent / 'webui')
 
 logger.debug(data_path)
+
 
 def update_file_paths():
     global appsettings_path, lagrange_path

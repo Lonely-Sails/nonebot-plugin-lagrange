@@ -66,17 +66,3 @@ async def download(url: str):
         except Exception as error:
             logger.error(F'下载失败！错误信息 {error}')
             return False
-
-
-async def download_webui():
-    for url in (
-        'https://raw.githubusercontent.com/Lonely-Sails/nonebot-plugin-lagrange/master/webui/index.js',
-        'https://raw.githubusercontent.com/Lonely-Sails/nonebot-plugin-lagrange/master/webui/index.css',
-        'https://raw.githubusercontent.com/Lonely-Sails/nonebot-plugin-lagrange/master/webui/index.html'
-    ):
-        if response := await download(url):
-            with open((globals.webui_path / url.split('/')[-1]), 'wb') as file:
-                file.write(response.read())
-                continue
-        logger.warning(F'从下载 {url} 下载失败！')
-        return False

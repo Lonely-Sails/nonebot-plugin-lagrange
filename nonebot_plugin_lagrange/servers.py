@@ -10,7 +10,6 @@ from nonebot.drivers import (
 
 from . import globals
 from .manager import manager
-from .network import download_webui
 
 
 async def static(request: Request):
@@ -19,9 +18,7 @@ async def static(request: Request):
         if request.url.query.get('token') != manager.config.lagrange_webui_token:
             return Response(403, content='Your token is wrong, please check it and try again!')
         file_name = 'index.html'
-    # file_path = (globals.webui_path / file_name)
-    from pathlib import Path
-    file_path = Path('webui') / file_name
+    file_path = (globals.webui_path / file_name)
     if not file_path.exists():
         return Response(404, content='WebUi was never installed.')
     with file_path.open('r', encoding='utf-8') as file:
@@ -125,12 +122,6 @@ async def api_websocket_logs(websocket: WebSocket):
 
 
 async def setup_servers():
-    if not globals.webui_path.exists():
-        globals.webui_path.mkdir(parents=True)
-        if manager.config.lagrange_webui and manager.config.lagrange_auto_install:
-            logger.info('检测到 WebUi 还未安装，正在自动安装！')
-            await download_webui()
-            logger.success('WebUi 安装成功！')
     if isinstance((driver := get_driver()), ASGIMixin):
         servers = (
             HTTPServerSetup(URL('/lagrange'), 'GET', 'page', static),
