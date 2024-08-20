@@ -70,5 +70,3 @@ _✨ 一款简化 Lagrange.OneBot 使用的插件。 ✨_
 
 - ✅使用 WebUi 来控制 Lagrange.
 - ✅实现多账号登录。
-# nonebot-plugin-lagrange
-# nonebot-plugin-lagrange
