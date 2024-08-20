@@ -66,7 +66,6 @@ _✨ 一款简化 Lagrange.OneBot 使用的插件。 ✨_
 
 暂时无任何指令。
 
-## 🫓 大饼
+## 🙏 鸣谢
 
-- ✅使用 WebUi 来控制 Lagrange.
-- ✅实现多账号登录。
+> [Lagrange](https://lagrangedev.github.io/Lagrange.Doc/)
