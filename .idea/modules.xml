@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../nonebot-plugin-gocqhttp/.idea/nonebot-plugin-gocqhttp.iml" filepath="$PROJECT_DIR$/../nonebot-plugin-gocqhttp/.idea/nonebot-plugin-gocqhttp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/nonebot-plugin-lagrange.iml" filepath="$PROJECT_DIR$/.idea/nonebot-plugin-lagrange.iml" />
+    </modules>
+  </component>
+</project>
