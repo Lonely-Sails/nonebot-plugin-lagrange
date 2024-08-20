@@ -42,6 +42,19 @@ async def api_status(request: Request):
     return Response(200, content=dumps({'success': False, 'message': '请提供机器人名称。'}))
 
 
+async def api_logout(request: Request):
+    if request.headers.get('token') != manager.config.lagrange_webui_token:
+        return Response(403)
+    if name := request.json.get('name'):
+        if lagrange := manager.get_lagrange(name):
+            await lagrange.stop()
+            lagrange.logout()
+            logger.debug(F'登出 {name} 机器人。')
+            return Response(200, content=dumps({'success': True}))
+        return Response(200, content=dumps({'success': False, 'message': F'没有找到名称为 「{name}」 的机器人。'}))
+    return Response(200, content=dumps({'success': False, 'message': '请提供机器人名称。'}))
+
+
 async def api_stop(request: Request):
     if request.headers.get('token') != manager.config.lagrange_webui_token:
         return Response(403)
@@ -97,7 +110,8 @@ async def api_delete(request: Request):
     if name := request.json.get('name'):
         if await manager.delete(name):
             return Response(200, content=dumps({'success': True}))
-        return Response(200, content=dumps({'success': False, 'message': F'删除机器人「{name}」失败！可能因为没有此名字的机器人。'}))
+        return Response(200, content=dumps(
+            {'success': False, 'message': F'删除机器人「{name}」失败！可能因为没有此名字的机器人。'}))
     return Response(200, content=dumps({'success': False, 'message': '请提供机器人名称。'}))
 
 
@@ -131,6 +145,7 @@ async def setup_servers():
             HTTPServerSetup(URL('/lagrange/api/start'), 'POST', 'api_start', api_start),
             HTTPServerSetup(URL('/lagrange/api/names'), 'POST', 'api_names', api_names),
             HTTPServerSetup(URL('/lagrange/api/qrcode'), 'POST', 'api_qrcode', api_qrcode),
+            HTTPServerSetup(URL('/lagrange/api/logout'), 'POST', 'api_logout', api_logout),
             HTTPServerSetup(URL('/lagrange/api/status'), 'POST', 'api_status', api_status),
             HTTPServerSetup(URL('/lagrange/api/create'), 'POST', 'api_create', api_create),
             HTTPServerSetup(URL('/lagrange/api/delete'), 'POST', 'api_delete', api_delete),

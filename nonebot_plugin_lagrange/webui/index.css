@@ -101,6 +101,14 @@ body main #actions #delete {
     border: 1px solid red;
 }
 
+body main #actions #logout {
+    float: left;
+    color: black;
+    margin-left: 0;
+    margin-right: 10px;
+    border: 1px solid black;
+}
+
 body main #actions #stop {
     color: palevioletred;
     border: 1px solid palevioletred;

@@ -54,7 +54,8 @@ function action(event) {
         { name: current_element.textContent },
         (_) => {
             if (event.target.id === "stop") action_buttons.className = "stopped";
-            else {
+            else if (event.target.id === "logout") action_buttons.className = "stopped";
+            else if (event.target.id === "start") {
                 log_console.innerHTML = "";
                 action_buttons.className = "started";
             }
@@ -131,6 +132,7 @@ function init() {
     let delete_button = document.querySelector(
         "body main div#actions span#delete"
     );
+    let logout_button = document.querySelector("body main div#actions span#logout");
     let qrcode_button = document.querySelector(
         "body main div#actions span#qrcode"
     );
@@ -140,6 +142,7 @@ function init() {
 
     stop_button.addEventListener("click", action);
     start_button.addEventListener("click", action);
+    logout_button.addEventListener("click", action);
     qrcode_button.addEventListener("click", show_qrcode);
 
     websocket = new WebSocket(
