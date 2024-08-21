@@ -8,8 +8,8 @@ from .servers import setup_servers
 
 __plugin_meta__ = PluginMetadata(
     name='lagrange',
-    description='A simple Lagrange.OneBot manager plugin.',
-    usage='Lagrange.OneBot manager plugin. Can use command to manage it.',
+    description='一款便于管理 Lagrange.OneBot 的插件，可用 WebUi 界面。',
+    usage='一款便于管理 Lagrange.OneBot 的插件，可用 WebUi 界面和指令管理。',
     type='application',
     homepage='https://www.github.com/Lonely-Sails/nonebot-plugin-lagrange',
     config=Config,
