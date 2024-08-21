@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot_plugin_lagrange"
-version = "0.2.0"
+version = "0.2.3"
 description = "A simple tool for helping users manage their qq bots."
 license = "GPL"
 authors = ["Lonely-Sails"]

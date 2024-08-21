@@ -1,6 +1,4 @@
 import nonebot
-from nonebot import on_command
-from nonebot.permission import SUPERUSER
 from nonebot.plugin import PluginMetadata
 
 from .config import Config

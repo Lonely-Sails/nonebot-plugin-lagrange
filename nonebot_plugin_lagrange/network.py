@@ -13,10 +13,10 @@ def extract_lagrange(file: BytesIO):
         with tarfile.open(fileobj=file) as zip_file:
             for member in zip_file.getmembers():
                 if member.isfile():
-                    with zip_file.extractfile(member) as file:
-                        file_name = file.name.split('/')[-1]
+                    with zip_file.extractfile(member) as lagrange_file:
+                        file_name = lagrange_file.name.split('/')[-1] or 'Lagrange.OneBot'
                         with open(globals.data_path / file_name, 'wb') as target_file:
-                            target_file.write(file.read())
+                            target_file.write(lagrange_file.read())
                             return True
     except Exception as error:
         logger.error(F'Lagrange.Onebot 解压失败！错误信息 {error}')
