@@ -56,9 +56,7 @@ _✨ 一款简化 Lagrange.OneBot 使用的插件。 ✨_
 08-19 10:50:54 [INFO] nonebot_plugin_lagrange | WebUi http://127.0.0.1:8080/lagrange?token=ijr...
 ```
 
-其中 `WebUi` 字段后面的链接就是 WebUi 的地址。请注意，后面的 token
-参数即为登录密码，请注意保管。你可以自己设置配置项 `Lagrange_webui_token` ，若检测到为空时将会自动生成一个 token
-并出存在拉格兰目录下的 `token.bin` 文件中。
+其中 `WebUi` 字段后面的链接就是 WebUi 的地址。请注意，后面的 token 参数即为登录密码，请注意保管。你可以自己设置配置项 `Lagrange_webui_token` ，若检测到为空时将会自动生成一个 token 并储存在拉格兰目录下的 `token.bin` 文件中。
 
 将这个链接复制到浏览器内并打开，如若出现界面则登录成功。
 

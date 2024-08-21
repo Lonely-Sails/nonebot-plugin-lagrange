@@ -28,6 +28,8 @@ __plugin_meta__ = PluginMetadata(
 
 driver = nonebot.get_driver()
 
+status_matcher = nonebot.on_command('拉格兰状态', aliases={'状态'})
+
 
 @driver.on_startup
 async def startup():
@@ -40,3 +42,14 @@ async def startup():
 @driver.on_shutdown
 async def shutdown():
     await manager.stop()
+
+
+@status_matcher.handle()
+async def status():
+    reply = []
+    for lagrange in manager.lagrange:
+        if lagrange.task is None:
+            reply.append(F'{lagrange.name} -> 关闭')
+            continue
+        reply.append(F'{lagrange.name} -> 开启')
+    await status_matcher.finish('\n'.join(reply))
