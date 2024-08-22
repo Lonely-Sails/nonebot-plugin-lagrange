@@ -25,6 +25,7 @@ function request(url, data, callback) {
                 alert("无权限访问！请检查 token 是否正确！");
             } else {
                 alert("错误的状态代码：" + request.status);
+                if (!mask_element.className) mask_element.className = "hidden";
             }
         }
     };
@@ -54,8 +55,10 @@ function action(event) {
         { name: current_element.textContent },
         (_) => {
             if (event.target.id === "stop") action_buttons.className = "stopped";
-            else if (event.target.id === "logout") action_buttons.className = "stopped";
-            else if (event.target.id === "start") {
+            else if (event.target.id === "logout") {
+                action_buttons.className = "stopped";
+                alert("已退出登录！");
+            } else if (event.target.id === "start") {
                 log_console.innerHTML = "";
                 action_buttons.className = "started";
             }
@@ -77,8 +80,8 @@ function show_qrcode() {
 }
 
 function hide_qrcode() {
-    if (!mask_element.className) {
-        let qrcode_img = mask_element.querySelector("img");
+    let qrcode_img = null;
+    if (qrcode_img = mask_element.querySelector("img")) {
         mask_element.className = "hidden";
         setTimeout(() => {
             mask_element.removeChild(qrcode_img);
@@ -122,23 +125,33 @@ function delete_bot(event) {
     }
 }
 
+function update_lagrange(event) {
+    if (confirm("确认更新 Lagrange 到最新版本？")) {
+        alert("正在更新 Lagrange，请稍候...");
+        mask_element.className = "";
+        request("lagrange/api/update", {}, (_) => {
+            alert("Lagrange 更新成功！");
+            mask_element.className = "hidden";
+        });
+    }
+}
+
 function init() {
     let params = new URLSearchParams(window.location.search);
     token = params.get("token");
 
-    let append_button = document.querySelector("body nav div#append");
-    let stop_button = document.querySelector("body main div#actions span#stop");
-    let start_button = document.querySelector("body main div#actions span#start");
-    let delete_button = document.querySelector(
-        "body main div#actions span#delete"
-    );
-    let logout_button = document.querySelector("body main div#actions span#logout");
-    let qrcode_button = document.querySelector(
-        "body main div#actions span#qrcode"
-    );
+    let append_button = document.querySelector("nav span#append");
+    let update_button = document.querySelector("nav span#update");
+
+    let stop_button = document.querySelector("main div#actions span#stop");
+    let start_button = document.querySelector("main div#actions span#start");
+    let delete_button = document.querySelector("main div#actions span#delete");
+    let logout_button = document.querySelector("main div#actions span#logout");
+    let qrcode_button = document.querySelector("main div#actions span#qrcode");
 
     append_button.addEventListener("click", create_bot);
     delete_button.addEventListener("click", delete_bot);
+    update_button.addEventListener("click", update_lagrange);
 
     stop_button.addEventListener("click", action);
     start_button.addEventListener("click", action);

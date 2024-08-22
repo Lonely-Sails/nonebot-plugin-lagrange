@@ -29,6 +29,8 @@ async def update():
         globals.lagrange_path.unlink()
     if globals.appsettings_path is not None:
         globals.appsettings_path.unlink()
+    globals.lagrange_path = None
+    globals.appsettings_path = None
     return await install()
 
 

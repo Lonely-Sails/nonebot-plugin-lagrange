@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "nonebot_plugin_lagrange"
-version = "0.2.3"
-description = "A simple tool for helping users manage their qq bots."
-license = "GPL"
+version = "1.0.0"
+description = "一款便于管理 Lagrange.Onebot 的插件。"
+license = "GPL3"
 authors = ["Lonely-Sails"]
 readme = "README.md"
 homepage = "https://github.com/Lonely-Sails/nonebot-plugin-lagrange"

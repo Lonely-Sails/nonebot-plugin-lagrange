@@ -43,10 +43,17 @@ body nav span:hover {
 }
 
 body nav div {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
+}
+
+body nav div span {
+    display: inline-block;
     text-align: center;
-    color: red;
     cursor: pointer;
+}
+
+body nav div span#update {
+    margin-left: 10px;
 }
 
 body nav div::after {

@@ -8,8 +8,8 @@ from nonebot.drivers import (
     HTTPServerSetup, WebSocketServerSetup, ASGIMixin, WebSocket, Response, Request, URL
 )
 
-from . import globals
 from .manager import manager
+from . import globals, network
 
 
 async def static(request: Request):
@@ -115,6 +115,16 @@ async def api_delete(request: Request):
     return Response(200, content=dumps({'success': False, 'message': '请提供机器人名称。'}))
 
 
+async def api_update(request: Request):
+    if request.headers.get('token') != manager.config.lagrange_webui_token:
+        return Response(403)
+    await manager.stop()
+    await network.update()
+    if manager.config.lagrange_auto_start:
+        await manager.run()
+    return Response(200, content=dumps({'success': True}))
+
+
 async def api_websocket_logs(websocket: WebSocket):
     if websocket.request.url.query.get('token') != manager.config.lagrange_webui_token:
         return None
@@ -149,6 +159,7 @@ async def setup_servers():
             HTTPServerSetup(URL('/lagrange/api/status'), 'POST', 'api_status', api_status),
             HTTPServerSetup(URL('/lagrange/api/create'), 'POST', 'api_create', api_create),
             HTTPServerSetup(URL('/lagrange/api/delete'), 'POST', 'api_delete', api_delete),
+            HTTPServerSetup(URL('/lagrange/api/update'), 'POST', 'api_update', api_update),
         )
         for server in servers:
             driver.setup_http_server(server)
