@@ -128,6 +128,7 @@ function delete_bot(event) {
 function update_lagrange(event) {
     if (confirm("确认更新 Lagrange 到最新版本？")) {
         alert("正在更新 Lagrange，请稍候...");
+        log_console.innerHTML = "";
         mask_element.className = "";
         request("lagrange/api/update", {}, (_) => {
             alert("Lagrange 更新成功！");
