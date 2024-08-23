@@ -71,6 +71,7 @@ class Lagrange:
             self.error_task.cancel()
             self.task = None
             self.log('INFO', 'Lagrange.Onebot 已退出！如若没有正常使用，请检查日志。')
+            await self.deal_lagrange_log('§dialog§Lagrange.OneBot 已退出！')
 
     async def run(self):
         self.cache.clear()
@@ -87,6 +88,7 @@ class Lagrange:
         if self.task is not None:
             logger.warning(F'Lagrange.Onebot 进程 {self.task} 未响应！正在强制关闭。')
             self.task.kill()
+            await self.deal_lagrange_log('§dialog§Lagrange.OneBot 未响应！已强制关闭。')
 
     async def listen_log(self):
         async for line in self.task.stdout:
