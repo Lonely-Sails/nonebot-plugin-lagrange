@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nonebot_plugin_lagrange"
-version = "1.0.0"
+version = "1.0.1"
 description = "一款便于管理 Lagrange.Onebot 的插件。"
 license = "GPL3"
 authors = ["Lonely-Sails"]
