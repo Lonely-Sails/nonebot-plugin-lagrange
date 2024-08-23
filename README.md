@@ -8,7 +8,7 @@
 
 # nonebot-plugin-lagrange
 
-_✨ 一款简化 Lagrange.OneBot 使用的插件。 ✨_
+_✨ 一款方便管理 Lagrange.OneBot 的插件。 ✨_
 
 </div>
 
@@ -18,6 +18,7 @@ _✨ 一款简化 Lagrange.OneBot 使用的插件。 ✨_
 
 - 自动配置使其连接上 NoneBot
 - 通过 WebUi 控制 Lagrange.
+- 提醒用户遇到登录失败的解决方法。
 - 根据系统自动安装合适的 Lagrange.OneBot.
 
 <details>
@@ -62,7 +63,13 @@ _✨ 一款简化 Lagrange.OneBot 使用的插件。 ✨_
 
 ### 指令表
 
-暂时无任何指令。
+|   名称   |  权限  | 说明      |
+|:------:|:----:|:--------|
+| status | 超级用户 | 查看拉格兰状态 |
+
+## 计划功能
+
+- [ ] 监控拉格兰日志，分析机器人的消息。
 
 ## 🙏 鸣谢
 
