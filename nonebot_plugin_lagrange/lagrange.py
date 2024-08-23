@@ -9,7 +9,7 @@ from nonebot.log import logger
 from . import globals
 from .utils import parse_log_level
 from .config import Config
-from .network import generate_default_settings
+from .network import generate_default_settings, update
 
 
 class Lagrange:
@@ -90,23 +90,32 @@ class Lagrange:
 
     async def listen_log(self):
         async for line in self.task.stdout:
-            line = line.decode('Utf-8').strip()
+            line = line.decode('Utf-8').rstrip()
             await self.deal_lagrange_log(line)
             if line[0] in ('█', '▀'):
                 self.log('INFO', line)
                 continue
-            elif log_level := parse_log_level(line):
+            elif log_info := parse_log_level(line):
+                log_class, log_level, message = log_info
                 if log_level == 'WARNING':
-                    self.log('WARNING', line)
+                    self.log('WARNING', message)
                     continue
-                self.log('DEBUG', line)
-            if line == 'Lagrange.OneBot Implementation has stopped':
+                elif log_level == 'FATAL':
+                    self.log('ERROR', message)
+                    if '45' in message and 'Login failed' in message:
+                        self.log('WARNING', '检测到协议错误导致登录失败！请尝试更新以解决此问题。')
+                        await self.deal_lagrange_log('§dialog§检测到登录失败！请尝试更新以解决此问题。')
+                    continue
+                self.log('DEBUG', message)
+            if 'Lagrange.OneBot Implementation has stopped' in line:
                 break
+        await self.deal_lagrange_log('§dialog§Lagrange.OneBot 已退出！')
+        self.task = None
 
     async def listen_error(self):
         async for line in self.task.stderr:
+            line = line.decode('Utf-8').rstrip()
             self.log('ERROR', line)
-            line = line.decode('Utf-8').strip()
             await self.deal_lagrange_log('§error§' + line)
 
     async def deal_lagrange_log(self, log: str):

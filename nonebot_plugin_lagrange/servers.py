@@ -119,6 +119,8 @@ async def api_update(request: Request):
     if request.headers.get('token') != manager.config.lagrange_webui_token:
         return Response(403)
     await manager.stop()
+    for lagrange in manager.lagrange:
+        lagrange.logout()
     await network.update()
     if manager.config.lagrange_auto_start:
         await manager.run()

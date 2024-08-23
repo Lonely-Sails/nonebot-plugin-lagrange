@@ -168,13 +168,16 @@ function init() {
         if (log_line.startsWith("§error§")) {
             log_line = log_line.replace("§error§", "");
             log_element.style.color = "red";
+        } else if (log_line.startsWith("dialog")) {
+            log_line = log_line.replace("§dialog§", "");
+            return alert(log_line);
         } else if (log_line.startsWith("fail")) log_element.style.color = "red";
         else if (log_line.startsWith("warn")) log_element.style.color = "yellow";
-        else if (log_line.includes("[FAIL]")) log_element.style.color = 'red';
+        else if (log_line.includes("[FATAL]")) log_element.style.color = 'red';
         else if (log_line.includes("[WARNING]")) log_element.style.color = 'yellow';
         log_element.textContent = log_line;
         log_console.appendChild(log_element);
-        log_element.scrollIntoView();
+        log_element.scrollIntoView({ behavior: "smooth" });
     };
 
     mask_element = document.querySelector("body div#mask");

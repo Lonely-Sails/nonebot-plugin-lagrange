@@ -39,5 +39,5 @@ def parse_log_level(log: str):
         if log.startswith(level):
             return False
     if log.startswith('['):
-        level = log.split(' ')[3]
-        return level.lstrip('[').rstrip(']:')
+        _, log_class, log_level, *message = log.split()
+        return log_class, log_level, ' '.join(message)
