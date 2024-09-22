@@ -19,7 +19,7 @@ def extract_lagrange(file: BytesIO):
                             target_file.write(lagrange_file.read())
                             return True
     except Exception as error:
-        logger.error(F'Lagrange.Onebot 解压失败！错误信息 {error}')
+        logger.error(F'Lagrange.Onebot 解压失败！错误信息 {error.args}')
     return False
 
 
@@ -40,25 +40,31 @@ async def install():
         return True
     system, architecture = parse_platform()
     logger.info(F'检测到当前的系统架构为 {system} {architecture} 正在下载对应的安装包……')
-    if response := await download(
-            'https://github.com/LagrangeDev/Lagrange.Core/releases/download/'
-            F'nightly/Lagrange.OneBot_{system}-{architecture}_net8.0_SelfContained.tar.gz'
-    ):
+    download_url = (
+        'https://github.com/LagrangeDev/Lagrange.Core/releases/download/'
+        F'nightly/Lagrange.OneBot_{system}-{architecture}_net8.0_SelfContained.tar.gz'
+    )
+    response = await download('https://ghp.ci/' + download_url)
+    if not response:
+        logger.error('使用代理下载失败！正在尝试使用直链下载……')
+        response = await download(download_url)
+    if response:
         logger.success(F'Lagrange.Onebot 下载成功！正在安装……')
         if extract_lagrange(response):
             generate_default_settings()
             globals.update_file_paths()
             logger.success('Lagrange.Onebot 安装成功！')
             return True
-    logger.error('Lagrange.Onebot 安装失败！')
+    logger.error('Lagrange.Onebot 安装失败！请尝试使用代理后再试。')
     return False
 
 
 async def download(url: str):
     download_bytes = BytesIO()
+    logger.debug(F'正在从 {url} 下载文件……')
     async with AsyncClient() as client:
         try:
-            async with client.stream('GET', 'https://mirror.ghproxy.com/' + url) as stream:
+            async with client.stream('GET', url) as stream:
                 if stream.status_code != 200:
                     return False
                 async for chunk in stream.aiter_bytes():
@@ -66,5 +72,5 @@ async def download(url: str):
                 download_bytes.seek(0)
                 return download_bytes
         except Exception as error:
-            logger.error(F'下载失败！错误信息 {error}')
+            logger.error(F'下载失败！错误信息 {error.args}')
             return False

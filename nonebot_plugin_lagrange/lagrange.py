@@ -9,7 +9,7 @@ from nonebot.log import logger
 from . import globals
 from .utils import parse_log_level
 from .config import Config
-from .network import generate_default_settings, update
+from .network import generate_default_settings
 
 
 class Lagrange:

@@ -10,12 +10,12 @@ appsettings_path: Path = None
 data_path: Path = get_data_dir('Lagrange/')
 webui_path: Path = (Path(__file__).parent / 'webui')
 
-logger.debug(data_path)
+logger.debug(F'数据目录为 {data_path}')
 
 
 def update_file_paths():
     global appsettings_path, lagrange_path
-    for file_path in tuple(data_path.rglob('*')):
+    for file_path in data_path.rglob('*'):
         if file_path.name.startswith('Lagrange.OneBot'):
             lagrange_path = file_path.absolute()
         elif file_path.name == 'appsettings.json':
