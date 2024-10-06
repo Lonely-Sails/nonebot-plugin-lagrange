@@ -1,6 +1,8 @@
-from io import BytesIO
+import tarfile
 from zipfile import ZipFile
+from io import BytesIO
 from httpx import AsyncClient
+from typing import Literal
 
 from nonebot.log import logger
 
@@ -8,15 +10,31 @@ from . import globals
 from .utils import generate_default_settings, parse_platform
 
 
-def extract_lagrange(file: BytesIO):
-    try:
+def extract_lagrange(file: BytesIO, file_type: Literal['tar', 'zip']):
+    def extract_tar():
+        with tarfile.open(fileobj=file) as tar_file:
+            for member in tar_file.getmembers():
+                if not member.isfile():
+                    continue
+                with tar_file.extractfile(member) as lagrange_file:
+                    file_name = lagrange_file.name.split('/')[-1] or 'Lagrange.OneBot'
+                    with open(globals.data_path / file_name, 'wb') as target_file:
+                        target_file.write(lagrange_file.read())
+                        return True
+
+    def extract_zip():
         with ZipFile(file) as zip_file:
             for name in zip_file.namelist():
-                if name.startswith('Lagrange.OneBot'):
+                if 'Lagrange.OneBot' in name:
                     file_name = name.split('/')[-1] or 'Lagrange.OneBot'
                     with open(globals.data_path / file_name, 'wb') as target_file:
                         target_file.write(zip_file.read(name))
-                        return True
+
+    try:
+        if file_type == 'tar':
+            return extract_tar()
+        elif file_type == 'zip':
+            return extract_zip()
     except Exception as error:
         logger.error(F'Lagrange.Onebot 解压失败！错误信息 {error.args}')
     return False
@@ -41,7 +59,7 @@ async def install():
     logger.info(F'检测到当前的系统架构为 {system} {architecture} 正在下载对应的安装包……')
     download_url = (
         'https://github.com/LagrangeDev/Lagrange.Core/releases/download/'
-        F'nightly/Lagrange.OneBot_{system}-{architecture}_net8.0_SelfContained.zip'
+        F'nightly/Lagrange.OneBot_{system}-{architecture}_net8.0_SelfContained.tar.gz'
     )
     response = await download('https://ghp.ci/' + download_url)
     if not response:
@@ -49,7 +67,7 @@ async def install():
         response = await download(download_url)
     if response:
         logger.success(F'Lagrange.Onebot 下载成功！正在安装……')
-        if extract_lagrange(response):
+        if extract_lagrange(response, 'zip' if system == 'win' else 'tar'):
             generate_default_settings()
             globals.update_file_paths()
             logger.success('Lagrange.Onebot 安装成功！')
