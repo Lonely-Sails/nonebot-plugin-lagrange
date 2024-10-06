@@ -17,17 +17,15 @@ def extract_lagrange(file: BytesIO, file_type: Literal['tar', 'zip']):
                 if not member.isfile():
                     continue
                 with tar_file.extractfile(member) as lagrange_file:
-                    file_name = lagrange_file.name.split('/')[-1] or 'Lagrange.OneBot'
-                    with open(globals.data_path / file_name, 'wb') as target_file:
+                    with open(globals.data_path / 'Lagrange.OneBot', 'wb') as target_file:
                         target_file.write(lagrange_file.read())
                         return True
 
     def extract_zip():
         with ZipFile(file) as zip_file:
             for name in zip_file.namelist():
-                if 'Lagrange.OneBot' in name:
-                    file_name = name.split('/')[-1] or 'Lagrange.OneBot'
-                    with open(globals.data_path / file_name, 'wb') as target_file:
+                if name.endswith('Lagrange.OneBot.exe'):
+                    with open(globals.data_path / 'Lagrange.OneBot.exe', 'wb') as target_file:
                         target_file.write(zip_file.read(name))
 
     try:
