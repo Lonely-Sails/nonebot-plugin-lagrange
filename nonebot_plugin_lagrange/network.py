@@ -27,6 +27,7 @@ def extract_lagrange(file: BytesIO, file_type: Literal['tar', 'zip']):
                 if name.endswith('Lagrange.OneBot.exe'):
                     with open(globals.data_path / 'Lagrange.OneBot.exe', 'wb') as target_file:
                         target_file.write(zip_file.read(name))
+                        return True
 
     try:
         if file_type == 'tar':
