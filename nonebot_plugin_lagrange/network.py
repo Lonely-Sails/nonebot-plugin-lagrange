@@ -1,5 +1,5 @@
-import tarfile
 from io import BytesIO
+from zipfile import ZipFile
 from httpx import AsyncClient
 
 from nonebot.log import logger
@@ -10,14 +10,13 @@ from .utils import generate_default_settings, parse_platform
 
 def extract_lagrange(file: BytesIO):
     try:
-        with tarfile.open(fileobj=file) as zip_file:
-            for member in zip_file.getmembers():
-                if member.isfile():
-                    with zip_file.extractfile(member) as lagrange_file:
-                        file_name = lagrange_file.name.split('/')[-1] or 'Lagrange.OneBot'
-                        with open(globals.data_path / file_name, 'wb') as target_file:
-                            target_file.write(lagrange_file.read())
-                            return True
+        with ZipFile(file) as zip_file:
+            for name in zip_file.namelist():
+                if name.startswith('Lagrange.OneBot'):
+                    file_name = name.split('/')[-1] or 'Lagrange.OneBot'
+                    with open(globals.data_path / file_name, 'wb') as target_file:
+                        target_file.write(zip_file.read(name))
+                        return True
     except Exception as error:
         logger.error(F'Lagrange.Onebot 解压失败！错误信息 {error.args}')
     return False
@@ -42,7 +41,7 @@ async def install():
     logger.info(F'检测到当前的系统架构为 {system} {architecture} 正在下载对应的安装包……')
     download_url = (
         'https://github.com/LagrangeDev/Lagrange.Core/releases/download/'
-        F'nightly/Lagrange.OneBot_{system}-{architecture}_net8.0_SelfContained.tar.gz'
+        F'nightly/Lagrange.OneBot_{system}-{architecture}_net8.0_SelfContained.zip'
     )
     response = await download('https://ghp.ci/' + download_url)
     if not response:
