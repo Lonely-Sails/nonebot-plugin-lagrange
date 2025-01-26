@@ -58,10 +58,10 @@ async def install():
     logger.info(F'检测到当前的系统架构为 {system} {architecture} 正在下载对应的安装包……')
     download_url = (
         'https://github.com/LagrangeDev/Lagrange.Core/releases/download/'
-        F'nightly/Lagrange.OneBot_{system}-{architecture}_net8.0_SelfContained.'
+        F'nightly/Lagrange.OneBot_{system}-{architecture}_net9.0_SelfContained.'
         'zip' if system == 'win' else 'tar.gz'
     )
-    response = await download('https://ghp.ci/' + download_url)
+    response = await download('https://www.ghproxy.cn/' + download_url)
     if not response:
         logger.error('使用代理下载失败！正在尝试使用直链下载……')
         response = await download(download_url)
