@@ -49,9 +49,13 @@ class Lagrange:
             globals.update_file_paths()
         with globals.appsettings_path.open('r', encoding='Utf-8') as file:
             lagrange_config = load(file)
+        lagrange_config['QrCode']['ConsoleCompatibilityMode'] = True
         lagrange_config['Implementations'][0]['Port'] = self.config.port
         lagrange_config['Implementations'][0]['Host'] = str(self.config.host)
         lagrange_config['Implementations'][0]['AccessToken'] = self.config.onebot_access_token
+        if not lagrange_config['SignServerUrl']:
+            logger.info('检测到未设置签名服务器地址！将使用配置的签名地址。')
+            lagrange_config['SignServerUrl'] = self.config.lagrange_sign_server_url
         with config_path.open('w', encoding='Utf-8') as file:
             dump(lagrange_config, file)
             self.log('SUCCESS', 'Lagrange.Onebot 配置文件更新成功！')
@@ -63,7 +67,12 @@ class Lagrange:
 
     async def stop(self):
         if self.task is not None:
-            self.task.terminate()
+            try:
+                self.task.terminate()
+            except ProcessLookupError:
+                logger.info(F'Lagrange.Onebot 进程 {self.task} 已退出！')
+                self.task = None
+                return await self.deal_lagrange_log('§dialog§Lagrange.OneBot 已经退出！')
             checker_task = asyncio.create_task(self.checker())
             await self.task.wait()
             checker_task.cancel()

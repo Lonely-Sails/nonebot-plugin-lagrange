@@ -143,7 +143,7 @@ async def api_websocket_logs(websocket: WebSocket):
                     for log in lagrange.cache:
                         await websocket.send(log)
                     lagrange.connections.append(websocket)
-    except WebSocketClosed:
+    except (WebSocketClosed, RuntimeError):
         logger.info('Websocket 连接已关闭！')
 
 

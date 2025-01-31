@@ -56,10 +56,10 @@ async def install():
         return True
     system, architecture = parse_platform()
     logger.info(F'检测到当前的系统架构为 {system} {architecture} 正在下载对应的安装包……')
+    file_foramt = 'zip' if system == 'win' else 'tar.gz'
     download_url = (
         'https://github.com/LagrangeDev/Lagrange.Core/releases/download/'
-        F'nightly/Lagrange.OneBot_{system}-{architecture}_net9.0_SelfContained.'
-        'zip' if system == 'win' else 'tar.gz'
+        F'nightly/Lagrange.OneBot_{system}-{architecture}_net9.0_SelfContained.{file_foramt}'
     )
     response = await download('https://www.ghproxy.cn/' + download_url)
     if not response:

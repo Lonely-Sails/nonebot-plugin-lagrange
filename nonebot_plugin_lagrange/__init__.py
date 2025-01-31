@@ -3,8 +3,8 @@ from nonebot.plugin import PluginMetadata
 
 from .config import Config
 from .manager import manager
-from .globals import update_file_paths
 from .servers import setup_servers
+
 
 __plugin_meta__ = PluginMetadata(
     name='lagrange',
