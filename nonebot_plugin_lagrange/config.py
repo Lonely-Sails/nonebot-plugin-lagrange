@@ -18,4 +18,5 @@ class Config(BaseModel):
 
     lagrange_webui: bool = True
     lagrange_webui_token: str = None
+    lagrange_github_proxy: str = None
     lagrange_sign_server_url: str = 'https://sign.lagrangecore.org/api/sign/30366'
