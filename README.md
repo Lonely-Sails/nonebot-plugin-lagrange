@@ -6,15 +6,16 @@
 
 <div align="center">
 
-# nonebot-plugin-lagrange
+# nonebot-plugin-lagrang
+
+</div>
 
 > [!CAUTION]
+> 
 > Lagrange.OneBot 已停止维护，本项目也已暂停维护，不再进行更新，请谨慎使用！
 > 相关链接：https://lagrangedev.github.io/Lagrange.Doc/v2/
 
 _✨ 一款方便管理 Lagrange.OneBot 的插件。 ✨_
-
-</div>
 
 ## 📖 介绍
 
