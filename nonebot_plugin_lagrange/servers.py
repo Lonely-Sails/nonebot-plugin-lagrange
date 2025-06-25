@@ -15,7 +15,7 @@ from . import globals, network
 async def static(request: Request):
     file_name = request.url.name
     if file_name == 'lagrange':
-        if request.url.query.get('token') != manager.config.lagrange_webui_token:
+        if request.url.query.get('token') != globals.config.lagrange_webui_token:
             return Response(403, content='Your token is wrong, please check it and try again!')
         file_name = 'index.html'
     file_path = (globals.webui_path / file_name)
@@ -26,14 +26,14 @@ async def static(request: Request):
 
 
 async def api_names(request: Request):
-    if request.headers.get('token') != manager.config.lagrange_webui_token:
+    if request.headers.get('token') != globals.config.lagrange_webui_token:
         return Response(403)
     names = [lagrange.name for lagrange in manager.lagrange]
     return Response(200, content=dumps({'success': True, 'data': names}))
 
 
 async def api_status(request: Request):
-    if request.headers.get('token') != manager.config.lagrange_webui_token:
+    if request.headers.get('token') != globals.config.lagrange_webui_token:
         return Response(403)
     if name := request.json.get('name'):
         if lagrange := manager.get_lagrange(name):
@@ -43,7 +43,7 @@ async def api_status(request: Request):
 
 
 async def api_logout(request: Request):
-    if request.headers.get('token') != manager.config.lagrange_webui_token:
+    if request.headers.get('token') != globals.config.lagrange_webui_token:
         return Response(403)
     if name := request.json.get('name'):
         if lagrange := manager.get_lagrange(name):
@@ -56,7 +56,7 @@ async def api_logout(request: Request):
 
 
 async def api_stop(request: Request):
-    if request.headers.get('token') != manager.config.lagrange_webui_token:
+    if request.headers.get('token') != globals.config.lagrange_webui_token:
         return Response(403)
     if name := request.json.get('name'):
         if await manager.stop_lagrange(name):
@@ -67,7 +67,7 @@ async def api_stop(request: Request):
 
 
 async def api_start(request: Request):
-    if request.headers.get('token') != manager.config.lagrange_webui_token:
+    if request.headers.get('token') != globals.config.lagrange_webui_token:
         return Response(403)
     if name := request.json.get('name'):
         if await manager.run_lagrange(name):
@@ -78,13 +78,13 @@ async def api_start(request: Request):
 
 
 async def api_qrcode(request: Request):
-    if request.headers.get('token') != manager.config.lagrange_webui_token:
+    if request.headers.get('token') != globals.config.lagrange_webui_token:
         return Response(403)
     if name := request.json.get('name'):
         if lagrange := manager.get_lagrange(name):
             qrcode_path = (lagrange.path / 'qr-0.png')
             if not qrcode_path.exists():
-                return Response(200, content=dumps({'success': False, 'message': F'没有找到名称为 「{name}」 的机器人。'}))
+                return Response(200, content=dumps({'success': False, 'message': F'没有找到名称为 「{name}」 的机器人的二维码！'}))
             with qrcode_path.open('rb') as file:
                 image = b64encode(file.read())
             return Response(200, content=dumps({'success': True, 'data': image.decode('Utf-8')}))
@@ -93,7 +93,7 @@ async def api_qrcode(request: Request):
 
 
 async def api_create(request: Request):
-    if request.headers.get('token') != manager.config.lagrange_webui_token:
+    if request.headers.get('token') != globals.config.lagrange_webui_token:
         return Response(403)
     if name := request.json.get('name'):
         if manager.get_lagrange(name):
@@ -105,7 +105,7 @@ async def api_create(request: Request):
 
 
 async def api_delete(request: Request):
-    if request.headers.get('token') != manager.config.lagrange_webui_token:
+    if request.headers.get('token') != globals.config.lagrange_webui_token:
         return Response(403)
     if name := request.json.get('name'):
         if await manager.delete(name):
@@ -116,19 +116,19 @@ async def api_delete(request: Request):
 
 
 async def api_update(request: Request):
-    if request.headers.get('token') != manager.config.lagrange_webui_token:
+    if request.headers.get('token') != globals.config.lagrange_webui_token:
         return Response(403)
     await manager.stop()
     for lagrange in manager.lagrange:
         lagrange.logout()
     await network.update()
-    if manager.config.lagrange_auto_start:
+    if globals.config.lagrange_auto_start:
         await manager.run()
     return Response(200, content=dumps({'success': True}))
 
 
 async def api_websocket_logs(websocket: WebSocket):
-    if websocket.request.url.query.get('token') != manager.config.lagrange_webui_token:
+    if websocket.request.url.query.get('token') != globals.config.lagrange_webui_token:
         return None
     name = None
     await websocket.accept()
@@ -171,7 +171,7 @@ async def setup_servers():
         color_logger = logger.opt(colors=True)
         color_logger.info(
             F'WebUi <yellow><b>http://{driver.config.host}:{driver.config.port}'
-            F'/lagrange?token={manager.config.lagrange_webui_token}</b></yellow>'
+            F'/lagrange?token={globals.config.lagrange_webui_token}</b></yellow>'
         )
         return None
     logger.error('当前驱动不支持 Http 服务器！载入 WebUi 失败，请检查驱动是否正确。')

@@ -8,6 +8,11 @@
 
 # nonebot-plugin-lagrange
 
+> [!Caution]
+>
+> Lagrange.OneBot 已停止维护，本项目也已暂停维护，不再进行更新，请谨慎使用！
+> 相关链接：https://lagrangedev.github.io/Lagrange.Doc/v2/
+
 _✨ 一款方便管理 Lagrange.OneBot 的插件。 ✨_
 
 </div>
@@ -38,15 +43,14 @@ _✨ 一款方便管理 Lagrange.OneBot 的插件。 ✨_
 
 在 NoneBot2 项目的`.env`文件中添加下表中的必填配置
 
-|          配置项          | 必填 |     默认值     |                         说明                          |
-| :----------------------: | :--: | :------------: | :---------------------------------------------------: |
-|      lagrange_path       |  否  |    Lagrange    |          Lagrange.OneBot 的安装和运行目录。           |
-|   lagrange_auto_start    |  否  |      True      |       是否在检测到有安装 Lgr 的情况下自动启动。       |
-|  lagrange_auto_install   |  否  |      True      |            是否在未安装 Lgr 的情况自动安装            |
-|  lagrange_max_cache_log  |  否  |      500       |                  最大缓存多少行日志                   |
-|      lagrange_webui      |  否  |      True      |                    是否启用 WebUi                     |
-|   lagrange_webui_token   |  否  |       空       |                  登录 WebUi 的 token                  |
-| lagrange_sign_server_url |  否  | 最新的签名地址 | Lagrange 签名服务器地址（仅在签名服务器未为空时启用） |
+|          配置项           | 必填 |   默认值    |            说明             |
+|:----------------------:|:--:|:--------:|:-------------------------:|
+|     lagrange_path      | 否  | Lagrange | Lagrange.OneBot 的安装和运行目录。 |
+|  lagrange_auto_start   | 否  |   True   |  是否在检测到有安装 Lgr 的情况下自动启动。  |
+| lagrange_auto_install  | 否  |   True   |    是否在未安装 Lgr 的情况自动安装     |
+| lagrange_max_cache_log | 否  |   500    |         最大缓存多少行日志         |
+|     lagrange_webui     | 否  |   True   |        是否启用 WebUi         |
+|  lagrange_webui_token  | 否  |    空     |     登录 WebUi 的 token      |
 
 ## 🎉 使用
 
@@ -64,8 +68,8 @@ _✨ 一款方便管理 Lagrange.OneBot 的插件。 ✨_
 
 ### 指令表
 
-|  名称  |   权限   | 说明           |
-| :----: | :------: | :------------- |
+|   名称   |  权限  | 说明      |
+|:------:|:----:|:--------|
 | status | 超级用户 | 查看拉格兰状态 |
 
 ## 计划功能
@@ -75,3 +79,5 @@ _✨ 一款方便管理 Lagrange.OneBot 的插件。 ✨_
 ## 🙏 鸣谢
 
 > [Lagrange](https://lagrangedev.github.io/Lagrange.Doc/)
+> [!WARNING]
+

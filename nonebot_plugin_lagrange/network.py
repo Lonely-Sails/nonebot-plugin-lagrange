@@ -61,7 +61,7 @@ async def install():
         'https://github.com/LagrangeDev/Lagrange.Core/releases/download/'
         F'nightly/Lagrange.OneBot_{system}-{architecture}_net9.0_SelfContained.{file_foramt}'
     )
-    response = await download('https://www.ghproxy.cn/' + download_url)
+    response = await download(globals.config.lagrange_github_proxy + download_url)
     if not response:
         logger.error('使用代理下载失败！正在尝试使用直链下载……')
         response = await download(download_url)

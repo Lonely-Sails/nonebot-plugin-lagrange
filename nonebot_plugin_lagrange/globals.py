@@ -1,9 +1,12 @@
 from pathlib import Path
-from nonebot import require
 from nonebot.log import logger
+from nonebot import require, get_plugin_config
+from .config import Config
 
 require = require('nonebot_plugin_localstore')
 from nonebot_plugin_localstore import get_data_dir
+
+config: Config = get_plugin_config(Config)
 
 lagrange_path: Path = None
 appsettings_path: Path = None

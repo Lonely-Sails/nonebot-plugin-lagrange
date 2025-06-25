@@ -8,7 +8,6 @@ from nonebot.log import logger
 
 from . import globals
 from .utils import parse_log_level
-from .config import Config
 from .network import generate_default_settings
 
 
@@ -19,16 +18,15 @@ class Lagrange:
 
     path: Path = None
     task: Process = None
-    config: Config = None
 
     log_task: Task = None
     error_task: Task = None
 
-    def __init__(self, config: Config, name: str):
+    def __init__(self, name: str):
         self.cache = []
         self.connections = []
-        self.config, self.name = config, name
-        self.path = (self.config.lagrange_path / name)
+        self.name = name
+        self.path = (globals.config.lagrange_path / name)
 
     def rename(self, name: str):
         self.name = name
@@ -50,12 +48,12 @@ class Lagrange:
         with globals.appsettings_path.open('r', encoding='Utf-8') as file:
             lagrange_config = load(file)
         lagrange_config['QrCode']['ConsoleCompatibilityMode'] = True
-        lagrange_config['Implementations'][0]['Port'] = self.config.port
-        lagrange_config['Implementations'][0]['Host'] = str(self.config.host)
-        lagrange_config['Implementations'][0]['AccessToken'] = self.config.onebot_access_token
+        lagrange_config['Implementations'][0]['Port'] = globals.config.port
+        lagrange_config['Implementations'][0]['Host'] = str(globals.config.host)
+        lagrange_config['Implementations'][0]['AccessToken'] = globals.config.onebot_access_token
         if not lagrange_config['SignServerUrl']:
             logger.info('检测到未设置签名服务器地址！将使用配置的签名地址。')
-            lagrange_config['SignServerUrl'] = self.config.lagrange_sign_server_url
+            lagrange_config['SignServerUrl'] = globals.config.lagrange_sign_server_url
         with config_path.open('w', encoding='Utf-8') as file:
             dump(lagrange_config, file)
             self.log('SUCCESS', 'Lagrange.Onebot 配置文件更新成功！')
@@ -86,7 +84,7 @@ class Lagrange:
         self.cache.clear()
         self.update_config()
         self.task = await asyncio.create_subprocess_exec(
-            str(globals.lagrange_path), stdout=PIPE, stderr=PIPE, cwd=self.path
+            str(globals.lagrange_path), stdout=PIPE, stderr=PIPE, cwd=str(self.path.absolute())
         )
         self.log_task = asyncio.create_task(self.listen_log())
         self.error_task = asyncio.create_task(self.listen_error())
@@ -101,6 +99,7 @@ class Lagrange:
 
     async def listen_log(self):
         async for line in self.task.stdout:
+            print(line)
             line = line.decode('Utf-8').rstrip()
             await self.deal_lagrange_log(line)
             if line[0] in ('█', '▀'):
@@ -130,7 +129,7 @@ class Lagrange:
             await self.deal_lagrange_log('§error§' + line)
 
     async def deal_lagrange_log(self, log: str):
-        if len(self.cache) > self.config.lagrange_max_cache_log:
+        if len(self.cache) > globals.config.lagrange_max_cache_log:
             self.cache.pop(0)
         self.cache.append(log)
         for connection in self.connections:

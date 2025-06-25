@@ -1,46 +1,41 @@
 import asyncio
 
 from nonebot.log import logger
-from nonebot.plugin import get_plugin_config
 
 from . import globals
-from .config import Config
 from .lagrange import Lagrange
 from .network import install
 from .utils import generate_token
 
 
 class Manager:
-    lagrange: list = []
-
-    config: Config = None
+    lagrange: list[Lagrange] = []
 
     def __init__(self):
-        self.config = get_plugin_config(Config)
-        if self.config.lagrange_webui:
+        if globals.config.lagrange_webui:
             self.update_token()
-        for lagrange_name in self.config.lagrange_path.rglob('*'):
+        for lagrange_name in globals.config.lagrange_path.glob('*'):
             if lagrange_name.is_dir():
-                self.lagrange.append(Lagrange(self.config, lagrange_name.name))
-        if globals.lagrange_path and self.config.lagrange_auto_start:
+                self.lagrange.append(Lagrange(lagrange_name.name))
+        if globals.lagrange_path and globals.config.lagrange_auto_start:
             logger.info('Lagrange.Onebot 已经安装，正在启动……')
             if not self.lagrange: asyncio.run(self.create('Default'))
-        elif (not globals.lagrange_path) and self.config.lagrange_auto_install:
+        elif (not globals.lagrange_path) and globals.config.lagrange_auto_install:
             logger.info('Lagrange.Onebot 未安装，正在安装……')
             asyncio.run(install())
 
     def update_token(self):
-        if not self.config.lagrange_path.exists():
-            self.config.lagrange_path.mkdir()
-        if not self.config.lagrange_webui_token:
-            token_path = (self.config.lagrange_path / 'token.bin')
+        if not globals.config.lagrange_path.exists():
+            globals.config.lagrange_path.mkdir()
+        if not globals.config.lagrange_webui_token:
+            token_path = (globals.config.lagrange_path / 'token.bin')
             if not token_path.exists():
-                self.config.lagrange_webui_token = generate_token()
+                globals.config.lagrange_webui_token = generate_token()
                 with token_path.open('w', encoding='Utf-8') as file:
-                    file.write(self.config.lagrange_webui_token)
+                    file.write(globals.config.lagrange_webui_token)
                 return None
             with token_path.open('r', encoding='Utf-8') as file:
-                self.config.lagrange_webui_token = file.read()
+                globals.config.lagrange_webui_token = file.read()
 
     async def create(self, lagrange_name: str, auto_run: bool = True):
         if not globals.lagrange_path:
@@ -49,7 +44,7 @@ class Manager:
         elif lagrange_name in (lagrange.name for lagrange in self.lagrange):
             logger.warning(F'Lagrange {lagrange_name} 已存在，无法重复创建')
             return False
-        lagrange = Lagrange(self.config, lagrange_name)
+        lagrange = Lagrange(lagrange_name)
         self.lagrange.append(lagrange)
         if auto_run is True:
             await asyncio.create_task(lagrange.run())

@@ -1,6 +1,7 @@
 import nonebot
 from nonebot.plugin import PluginMetadata
 
+from . import globals
 from .config import Config
 from .manager import manager
 from .servers import setup_servers
@@ -23,9 +24,9 @@ status_matcher = nonebot.on_command('拉格兰状态', aliases={'状态'})
 
 @driver.on_startup
 async def startup():
-    if manager.config.lagrange_auto_start:
+    if globals.config.lagrange_auto_start:
         await manager.run()
-    if manager.config.lagrange_webui:
+    if globals.config.lagrange_webui:
         await setup_servers()
 
 
