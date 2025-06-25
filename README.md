@@ -8,7 +8,7 @@
 
 # nonebot-plugin-lagrange
 
-> [!Caution]
+> [!CAUTION]
 >
 > Lagrange.OneBot 已停止维护，本项目也已暂停维护，不再进行更新，请谨慎使用！
 > 相关链接：https://lagrangedev.github.io/Lagrange.Doc/v2/
